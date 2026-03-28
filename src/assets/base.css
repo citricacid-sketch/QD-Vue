@@ -1,0 +1,179 @@
+/* color palette from <https://github.com/vuejs/theme> */
+:root {
+  /* 基础颜色 */
+  --vt-c-white: #ffffff;
+  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-mute: #f2f2f2;
+  --vt-c-white-light: #f5f7ff;
+
+  --vt-c-black: #181818;
+  --vt-c-black-soft: #222222;
+  --vt-c-black-mute: #282828;
+
+  /* 主色调 */
+  --vt-c-primary: #4a6cf7;
+  --vt-c-primary-light: #6b8afd;
+  --vt-c-primary-dark: #3a5ce5;
+  --vt-c-primary-hover: #2d4ccc;
+  --vt-c-primary-gradient: linear-gradient(135deg, #4a6cf7 0%, #3a5ce5 100%);
+
+  /* 辅助色 */
+  --vt-c-success: #10b981;
+  --vt-c-success-light: #34d399;
+  --vt-c-success-dark: #059669;
+  --vt-c-success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+
+  --vt-c-warning: #f59e0b;
+  --vt-c-danger: #ef4444;
+  --vt-c-info: #3b82f6;
+
+  /* 文字颜色 */
+  --vt-c-text-primary: #222222;
+  --vt-c-text-secondary: #555555;
+  --vt-c-text-tertiary: #666666;
+  --vt-c-text-light: #999999;
+
+  /* 边框和分隔线 */
+  --vt-c-border: #e0e7ff;
+  --vt-c-border-light: #e9ecef;
+  --vt-c-border-hover: #c7d2fe;
+  --vt-c-divider: rgba(74, 108, 247, 0.15);
+
+  /* 背景色 */
+  --vt-c-background-light: #f9fafb;
+  --vt-c-background-gradient: linear-gradient(135deg, #f5f7ff 0%, #e3e9ff 100%);
+
+  /* 阴影 */
+  --vt-c-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --vt-c-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  --vt-c-shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --vt-c-shadow-primary: 0 10px 30px rgba(74, 108, 247, 0.15);
+
+  /* 圆角 */
+  --vt-c-radius-sm: 8px;
+  --vt-c-radius: 12px;
+  --vt-c-radius-lg: 16px;
+  --vt-c-radius-full: 50%;
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--vt-c-white);
+  --color-background-soft: var(--vt-c-white-soft);
+  --color-background-mute: var(--vt-c-white-mute);
+  --color-background-light: var(--vt-c-white-light);
+  --color-background-gradient: var(--vt-c-background-gradient);
+
+  --color-primary: var(--vt-c-primary);
+  --color-primary-light: var(--vt-c-primary-light);
+  --color-primary-dark: var(--vt-c-primary-dark);
+  --color-primary-hover: var(--vt-c-primary-hover);
+  --color-primary-gradient: var(--vt-c-primary-gradient);
+
+  --color-success: var(--vt-c-success);
+  --color-success-light: var(--vt-c-success-light);
+  --color-success-dark: var(--vt-c-success-dark);
+  --color-success-gradient: var(--vt-c-success-gradient);
+
+  --color-warning: var(--vt-c-warning);
+  --color-danger: var(--vt-c-danger);
+  --color-info: var(--vt-c-info);
+
+  --color-text-primary: var(--vt-c-text-primary);
+  --color-text-secondary: var(--vt-c-text-secondary);
+  --color-text-tertiary: var(--vt-c-text-tertiary);
+  --color-text-light: var(--vt-c-text-light);
+
+  --color-border: var(--vt-c-border);
+  --color-border-light: var(--vt-c-border-light);
+  --color-border-hover: var(--vt-c-border-hover);
+  --color-divider: var(--vt-c-divider);
+
+  --color-heading: var(--vt-c-text-primary);
+  --color-text: var(--vt-c-text-primary);
+
+  --section-gap: 160px;
+
+  --shadow-sm: var(--vt-c-shadow-sm);
+  --shadow: var(--vt-c-shadow);
+  --shadow-lg: var(--vt-c-shadow-lg);
+  --shadow-primary: var(--vt-c-shadow-primary);
+
+  --radius-sm: var(--vt-c-radius-sm);
+  --radius: var(--vt-c-radius);
+  --radius-lg: var(--vt-c-radius-lg);
+  --radius-full: var(--vt-c-radius-full);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--vt-c-black);
+    --color-background-soft: var(--vt-c-black-soft);
+    --color-background-mute: var(--vt-c-black-mute);
+    --color-background-light: var(--vt-c-black-soft);
+    --color-background-gradient: var(--vt-c-black);
+
+    --color-primary: var(--vt-c-primary-light);
+    --color-primary-light: var(--vt-c-primary);
+    --color-primary-dark: var(--vt-c-primary-dark);
+    --color-primary-hover: var(--vt-c-primary);
+    --color-primary-gradient: linear-gradient(135deg, var(--vt-c-primary-light) 0%, var(--vt-c-primary) 100%);
+
+    --color-success: var(--vt-c-success-light);
+    --color-success-light: var(--vt-c-success);
+    --color-success-dark: var(--vt-c-success-dark);
+    --color-success-gradient: linear-gradient(135deg, var(--vt-c-success-light) 0%, var(--vt-c-success) 100%);
+
+    --color-warning: var(--vt-c-warning);
+    --color-danger: var(--vt-c-danger);
+    --color-info: var(--vt-c-info);
+
+    --color-text-primary: var(--vt-c-white);
+    --color-text-secondary: rgba(255, 255, 255, 0.8);
+    --color-text-tertiary: rgba(255, 255, 255, 0.7);
+    --color-text-light: rgba(255, 255, 255, 0.5);
+
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-border-light: rgba(255, 255, 255, 0.05);
+    --color-border-hover: rgba(255, 255, 255, 0.2);
+    --color-divider: rgba(255, 255, 255, 0.1);
+
+    --color-heading: var(--vt-c-white);
+    --color-text: var(--vt-c-white);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
