@@ -73,7 +73,22 @@ http.interceptors.response.use(
       }
 
       // 返回数据部分
-      return data.data !== undefined ? data.data : data
+      // 如果data.data存在，返回data.data
+      // 否则返回整个data对象（包含success、message等字段）
+      const result = data.data !== undefined ? data.data : data
+
+      // 如果result是字符串且包含success字段，说明是原始响应，需要解析
+      if (typeof result === 'string' && result.includes('success')) {
+        try {
+          const parsed = JSON.parse(result)
+          return parsed.data !== undefined ? parsed.data : parsed
+        } catch (e) {
+          // 如果解析失败，直接返回原始字符串
+          return result
+        }
+      }
+
+      return result
     }
 
     // 如果后端没有返回统一格式，直接返回整个响应数据

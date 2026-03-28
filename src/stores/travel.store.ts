@@ -321,32 +321,26 @@ export const useTravelStore = defineStore('travel', () => {
         sessionId: sessionId.value
       })
 
-      console.log('原始AI响应:', response)
+      console.log('AI响应:', response)
       console.log('响应类型:', typeof response)
-      console.log('响应是否为对象:', typeof response === 'object')
 
-      // 处理后端返回的ApiResponse格式
       // axios拦截器已经处理了ApiResponse格式，直接返回data部分
+      // 如果响应是字符串，直接返回
       if (typeof response === 'string') {
-        console.log('响应是字符串，直接返回')
         return response
-      } else if (response && typeof response === 'object') {
-        console.log('响应是对象，检查data字段')
-        // 如果返回的是对象，可能包含data字段
-        const responseData = (response as any).data
-        console.log('responseData:', responseData)
-        console.log('responseData类型:', typeof responseData)
-
-        if (typeof responseData === 'string') {
-          console.log('responseData是字符串，返回')
-          return responseData
-        }
-        console.log('responseData不是字符串，返回默认消息')
-        return 'AI暂时无法响应'
       }
 
-      console.log('响应既不是字符串也不是对象，返回默认消息')
-      return 'AI暂时无法响应'
+      // 如果响应是对象，尝试获取data字段
+      if (response && typeof response === 'object') {
+        const responseData = (response as any).data
+        if (typeof responseData === 'string') {
+          return responseData
+        }
+      }
+
+      // 其他情况返回默认消息
+      console.error('意外的响应格式:', response)
+      return 'AI暂时无法响应，请稍后再试。'
     } catch (err) {
       error.value = 'AI聊天失败'
       console.error('AI聊天失败:', err)
