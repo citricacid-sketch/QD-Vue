@@ -5,7 +5,7 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import type { Trip, FrontendTrip, User, ChatMessage } from '@/api/types/travel'
+import type { Trip, FrontendTrip, User, ChatMessage, TripImportResponse } from '@/api/types/travel'
 import { normalizeTrip, normalizeTripList, frontendToBackend } from '@/utils/transform'
 import httpClient from '@/api/axios'
 

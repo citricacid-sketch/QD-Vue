@@ -61,7 +61,7 @@ const policies = ref([
   }
 ])
 
-const selectedPolicy = ref(policies.value[0])
+const selectedPolicy = ref(policies.value[0] || policies.value[0]!)
 const searchQuery = ref('')
 
 // 过滤政策

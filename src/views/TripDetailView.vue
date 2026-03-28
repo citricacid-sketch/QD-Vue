@@ -17,8 +17,10 @@ const editedTrip = ref({ ...travelStore.currentTrip })
 watch(
   () => travelStore.currentTrip,
   (newTrip) => {
-    trip.value = newTrip
-    editedTrip.value = { ...newTrip }
+    if (newTrip) {
+      trip.value = newTrip
+      editedTrip.value = { ...newTrip }
+    }
   },
   { immediate: true }
 )
@@ -60,12 +62,14 @@ function startEditing() {
 // 取消编辑
 function cancelEditing() {
   isEditing.value = false
-  editedTrip.value = { ...trip.value }
+  if (trip.value) {
+    editedTrip.value = { ...trip.value }
+  }
 }
 
 // 保存编辑
 function saveEditing() {
-  if (editedTrip.value) {
+  if (editedTrip.value && trip.value) {
     travelStore.saveTrip(editedTrip.value)
     trip.value = editedTrip.value
   }
@@ -74,7 +78,7 @@ function saveEditing() {
 
 // 删除行程
 function deleteTrip() {
-  if (confirm('确定要删除这个行程吗？此操作不可恢复。')) {
+  if (trip.value && confirm('确定要删除这个行程吗？此操作不可恢复。')) {
     travelStore.deleteTrip(tripId)
     router.push('/trip')
   }
