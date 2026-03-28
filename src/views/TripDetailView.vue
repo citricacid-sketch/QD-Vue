@@ -70,8 +70,10 @@ function cancelEditing() {
 // 保存编辑
 function saveEditing() {
   if (editedTrip.value && trip.value) {
-    travelStore.saveTrip(editedTrip.value)
-    trip.value = editedTrip.value
+    const savedTrip = travelStore.saveTrip(editedTrip.value)
+    if (savedTrip) {
+      trip.value = savedTrip
+    }
   }
   isEditing.value = false
 }
