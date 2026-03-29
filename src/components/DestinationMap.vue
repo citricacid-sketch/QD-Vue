@@ -57,6 +57,7 @@ function addMarkers() {
   clearMarkers()
 
   import('leaflet').then((L) => {
+    if (!map) return
     props.destinations.forEach(dest => {
       if (dest.location.coordinates) {
         // 创建自定义图标
@@ -104,6 +105,7 @@ function addMarkers() {
 
 // 清除标记
 function clearMarkers() {
+  if (!map) return
   markers.forEach(marker => {
     map.removeLayer(marker)
   })
