@@ -11,7 +11,26 @@ const router = useRouter()
 const tripId = route.params.id as string
 const trip = ref(travelStore.currentTrip)
 const isEditing = ref(false)
-const editedTrip = ref({ ...travelStore.currentTrip })
+const editedTrip = ref({ 
+  ...travelStore.currentTrip,
+  budget: travelStore.currentTrip?.budget || {
+    total: 0,
+    currency: 'CNY',
+    breakdown: {
+      accommodation: 0,
+      transportation: 0,
+      food: 0,
+      activities: 0,
+      shopping: 0,
+      other: 0
+    }
+  },
+  transportation: travelStore.currentTrip?.transportation || {
+    primary: '',
+    secondary: '',
+    notes: ''
+  }
+})
 
 // 加载行程数据
 watch(
@@ -84,6 +103,22 @@ function deleteTrip() {
     travelStore.deleteTrip(tripId)
     router.push('/trip')
   }
+}
+
+// 添加日程
+function addDay() {
+  if (!editedTrip.value.days) {
+    editedTrip.value.days = []
+  }
+  const dayNumber = editedTrip.value.days.length + 1
+  const newDay = {
+    label: `第${dayNumber}天`,
+    date: '',
+    slots: []
+  }
+  editedTrip.value.days.push(newDay)
+  // 自动保存
+  saveEditing()
 }
 
 // 状态选项
@@ -202,6 +237,9 @@ const sourceOptions = [
             <div class="info-card-header">
               <span class="info-icon">💰</span>
               <h3>预算信息</h3>
+              <button v-if="!isEditing" class="btn btn-small btn-outline" @click="startEditing">
+                编辑
+              </button>
             </div>
             <div class="info-card-content">
               <div v-if="trip.budget" class="budget-display">
@@ -223,6 +261,46 @@ const sourceOptions = [
                 </div>
               </div>
               <p v-else class="no-data">未设置预算</p>
+              <div v-if="isEditing" class="budget-edit">
+                <div class="form-group">
+                  <label>总预算</label>
+                  <input type="number" v-model="editedTrip.budget.total" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label>币种</label>
+                  <select v-model="editedTrip.budget.currency" class="form-select">
+                    <option value="CNY">人民币 (CNY)</option>
+                    <option value="USD">美元 (USD)</option>
+                    <option value="EUR">欧元 (EUR)</option>
+                  </select>
+                </div>
+                <div class="budget-breakdown-edit">
+                  <div class="form-group">
+                    <label>住宿</label>
+                    <input type="number" v-model="editedTrip.budget.breakdown.accommodation" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label>交通</label>
+                    <input type="number" v-model="editedTrip.budget.breakdown.transportation" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label>餐饮</label>
+                    <input type="number" v-model="editedTrip.budget.breakdown.food" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label>活动</label>
+                    <input type="number" v-model="editedTrip.budget.breakdown.activities" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label>购物</label>
+                    <input type="number" v-model="editedTrip.budget.breakdown.shopping" class="form-input" />
+                  </div>
+                  <div class="form-group">
+                    <label>其他</label>
+                    <input type="number" v-model="editedTrip.budget.breakdown.other" class="form-input" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -230,10 +308,62 @@ const sourceOptions = [
             <div class="info-card-header">
               <span class="info-icon">🚗</span>
               <h3>交通方式</h3>
+              <button v-if="!isEditing" class="btn btn-small btn-outline" @click="startEditing">
+                编辑
+              </button>
             </div>
             <div class="info-card-content">
-              <p v-if="trip.transportation">{{ trip.transportation }}</p>
-              <p v-else class="no-data">未设置交通方式</p>
+              <div v-if="!isEditing">
+                <div v-if="trip.transportation" class="transportation-display">
+                  <div v-if="trip.transportation.primary" class="transport-item">
+                    <span class="transport-label">主要交通:</span>
+                    <span class="transport-value">{{ trip.transportation.primary }}</span>
+                  </div>
+                  <div v-if="trip.transportation.secondary" class="transport-item">
+                    <span class="transport-label">次要交通:</span>
+                    <span class="transport-value">{{ trip.transportation.secondary }}</span>
+                  </div>
+                  <div v-if="trip.transportation.notes" class="transport-item">
+                    <span class="transport-label">备注:</span>
+                    <span class="transport-value">{{ trip.transportation.notes }}</span>
+                  </div>
+                </div>
+                <p v-else class="no-data">未设置交通方式</p>
+              </div>
+              <div v-else class="transportation-edit">
+                <div class="form-group">
+                  <label>主要交通方式</label>
+                  <select v-model="editedTrip.transportation.primary" class="form-select">
+                    <option value="">请选择</option>
+                    <option value="飞机">飞机</option>
+                    <option value="高铁">高铁</option>
+                    <option value="火车">火车</option>
+                    <option value="汽车">汽车</option>
+                    <option value="轮船">轮船</option>
+                    <option value="公共交通">公共交通</option>
+                    <option value="出租车">出租车</option>
+                    <option value="自驾">自驾</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>次要交通方式</label>
+                  <select v-model="editedTrip.transportation.secondary" class="form-select">
+                    <option value="">请选择</option>
+                    <option value="飞机">飞机</option>
+                    <option value="高铁">高铁</option>
+                    <option value="火车">火车</option>
+                    <option value="汽车">汽车</option>
+                    <option value="轮船">轮船</option>
+                    <option value="公共交通">公共交通</option>
+                    <option value="出租车">出租车</option>
+                    <option value="自驾">自驾</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>交通备注</label>
+                  <textarea v-model="editedTrip.transportation.notes" class="form-textarea" rows="3"></textarea>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -259,7 +389,7 @@ const sourceOptions = [
         <div class="daily-schedule-section">
           <div class="section-header">
             <h2>每日安排</h2>
-            <button class="btn btn-primary btn-small">
+            <button class="btn btn-primary btn-small" @click="addDay">
               + 添加日程
             </button>
           </div>
@@ -395,6 +525,79 @@ const sourceOptions = [
 .btn-small {
   padding: 8px 16px;
   font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #4a6cf7;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.budget-breakdown-edit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.transportation-display {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.transport-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.transport-item:last-child {
+  border-bottom: none;
+}
+
+.transport-label {
+  color: #666;
+  font-size: 14px;
+}
+
+.transport-value {
+  color: #333;
+  font-weight: 500;
 }
 
 .header-actions {

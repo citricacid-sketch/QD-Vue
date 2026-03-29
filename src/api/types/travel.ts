@@ -33,6 +33,12 @@ export interface Budget {
   breakdown?: BudgetBreakdown; // 预算细分
 }
 
+export interface Transportation {
+  primary?: string;      // 主要交通方式
+  secondary?: string;    // 次要交通方式
+  notes?: string;        // 交通备注
+}
+
 // ==================== 前后端数据模型 ====================
 
 /**
@@ -50,7 +56,7 @@ export interface FrontendTrip {
   description?: string;  // 描述（后端字段名，前端也支持）
   days?: Day[];          // 天数列表
   budget?: Budget;       // 预算信息
-  transportation?: string; // 交通信息
+  transportation?: Transportation; // 交通信息
   createdAt?: string;    // 创建时间
   updatedAt?: string;    // 更新时间
 }
@@ -69,7 +75,7 @@ export interface BackendTravelPlan {
   description?: string;  // 描述（后端字段名）
   days?: Day[];          // 天数列表
   budget?: Budget;       // 预算信息
-  transportation?: string; // 交通信息
+  transportation?: Transportation; // 交通信息
 }
 
 /**
