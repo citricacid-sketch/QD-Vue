@@ -10,6 +10,7 @@ interface AMap {
   Map: any
   Marker: any
   InfoWindow: any
+  Pixel: any
 }
 
 declare global {
@@ -81,7 +82,7 @@ function goBack() {
 
 // 地图相关
 const mapContainer = ref<HTMLElement | null>(null)
-let map: AMap.Map | null = null
+let map: InstanceType<typeof window.AMap.Map> | null = null
 let marker: any = null
 
 // 初始化地图
@@ -792,5 +793,49 @@ onUnmounted(() => {
   .gallery {
     grid-template-columns: 1fr;
   }
+}
+
+/* 地图样式 */
+.map-info {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 12px;
+}
+
+.map-info p {
+  margin: 4px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.map-info .coordinates {
+  font-family: monospace;
+  color: #999;
+  font-size: 12px;
+}
+
+.map-container {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+:deep(.amap-info-window) {
+  padding: 12px;
+  min-width: 200px;
+}
+
+:deep(.amap-info-window h3) {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #222;
+}
+
+:deep(.amap-info-window p) {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
 }
 </style>

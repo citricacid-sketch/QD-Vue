@@ -8,6 +8,7 @@ interface AMap {
   Marker: any
   InfoWindow: any
   TileLayer: any
+  Pixel: any
 }
 
 declare global {
@@ -32,7 +33,7 @@ const emit = defineEmits<{
 }>()
 
 const mapContainer = ref<HTMLElement | null>(null)
-let map: AMap.Map | null = null
+let map: InstanceType<typeof window.AMap.Map> | null = null
 let markers: any[] = []
 let infoWindows: any[] = []
 
