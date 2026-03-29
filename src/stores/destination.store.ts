@@ -4,7 +4,7 @@
  */
 
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { Destination, DestinationSearchFilters, Attraction } from '@/api/types/travel'
 import httpClient from '@/api/axios'
 
@@ -184,10 +184,15 @@ export const useDestinationStore = defineStore('destination', () => {
 
     if (index >= 0) {
       // 更新现有目的地
+      const existing = destinations.value[index]
       destinations.value[index] = {
-        ...destinations.value[index],
+        ...existing,
         ...destinationData,
         id,
+        name: destinationData.name || existing.name,
+        description: destinationData.description || existing.description,
+        image: destinationData.image || existing.image,
+        location: destinationData.location || existing.location,
         updatedAt: new Date().toISOString()
       }
       return destinations.value[index]

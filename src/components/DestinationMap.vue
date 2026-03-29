@@ -78,7 +78,9 @@ function addMarkers() {
         marker.on('click', () => {
           emit('destinationClick', dest)
           // 地图移动到标记位置
-          map.setView([dest.location.coordinates.lat, dest.location.coordinates.lng], 8)
+          if (dest.location.coordinates) {
+            map.setView([dest.location.coordinates.lat, dest.location.coordinates.lng], 8)
+          }
         })
 
         // 添加弹出窗口
