@@ -40,7 +40,11 @@ watch(
   (newTrip) => {
     if (newTrip) {
       trip.value = newTrip
-      editedTrip.value = { ...newTrip }
+      editedTrip.value = {
+        ...newTrip,
+        budget: newTrip.budget ? { ...newTrip.budget } : defaultBudget,
+        transportation: newTrip.transportation ? { ...newTrip.transportation } : defaultTransportation
+      }
     }
   },
   { immediate: true }
