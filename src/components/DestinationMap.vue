@@ -57,7 +57,8 @@ function addMarkers() {
   clearMarkers()
 
   import('leaflet').then((L) => {
-    if (!map) return
+    const currentMap = map
+    if (!currentMap) return
     props.destinations.forEach(dest => {
       if (dest.location.coordinates) {
         // 创建自定义图标
@@ -77,14 +78,14 @@ function addMarkers() {
         const marker = L.marker(
           [dest.location.coordinates.lat, dest.location.coordinates.lng],
           { icon }
-        ).addTo(map)
+        ).addTo(currentMap)
 
         // 添加点击事件
         marker.on('click', () => {
           emit('destinationClick', dest)
           // 地图移动到标记位置
           if (dest.location.coordinates) {
-            map.setView([dest.location.coordinates.lat, dest.location.coordinates.lng], 8)
+            currentMap.setView([dest.location.coordinates.lat, dest.location.coordinates.lng], 8)
           }
         })
 
@@ -105,9 +106,10 @@ function addMarkers() {
 
 // 清除标记
 function clearMarkers() {
-  if (!map) return
+  const currentMap = map
+  if (!currentMap) return
   markers.forEach(marker => {
-    map.removeLayer(marker)
+    currentMap.removeLayer(marker)
   })
   markers = []
 }
