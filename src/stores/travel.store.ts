@@ -31,7 +31,7 @@ export const useTravelStore = defineStore('travel', () => {
   })
 
   // AI聊天对话列表
-  const aiConversations = ref<any[]>([])
+  const aiConversations = ref<ChatMessage[]>([])
 
   // 会话ID
   const sessionId = ref<string | null>(null)
@@ -332,7 +332,7 @@ export const useTravelStore = defineStore('travel', () => {
 
       // 如果响应是对象，尝试获取data字段
       if (response && typeof response === 'object') {
-        const responseData = (response as any).data
+        const responseData = (response as { data?: string }).data
         if (typeof responseData === 'string') {
           return responseData
         }
