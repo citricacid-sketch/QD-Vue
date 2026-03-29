@@ -27,6 +27,11 @@ function initMap() {
 
   // 动态导入Leaflet
   import('leaflet').then((L) => {
+    // 动态加载Leaflet CSS
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+    document.head.appendChild(link)
     // 创建地图实例
     map = L.map(mapContainer.value).setView([35.8617, 104.1954], props.zoom)
 
@@ -131,8 +136,6 @@ defineExpose({
 </template>
 
 <style scoped>
-@import 'leaflet/dist/leaflet.css';
-
 .destination-map {
   width: 100%;
   border-radius: 8px;
