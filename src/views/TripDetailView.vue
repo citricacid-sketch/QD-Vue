@@ -88,7 +88,11 @@ function startEditing() {
 function cancelEditing() {
   isEditing.value = false
   if (trip.value) {
-    editedTrip.value = { ...trip.value }
+    editedTrip.value = {
+      ...trip.value,
+      budget: trip.value.budget ? { ...trip.value.budget } : defaultBudget,
+      transportation: trip.value.transportation ? { ...trip.value.transportation } : defaultTransportation
+    }
   }
 }
 
