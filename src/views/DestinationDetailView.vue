@@ -89,6 +89,16 @@ async function initMap() {
     // 加载高德地图API
     await loadAmapScript()
 
+    // 清理旧的地图实例
+    if (map) {
+      map.destroy()
+      map = null
+    }
+    if (marker) {
+      marker.setMap(null)
+      marker = null
+    }
+
     // 创建地图实例
     if (mapContainer.value && destination.value?.location.coordinates) {
       const { lat, lng } = destination.value.location.coordinates
@@ -96,13 +106,15 @@ async function initMap() {
         zoom: 12,
         center: [lng, lat],
         viewMode: '2D',
-        pitch: 0
+        pitch: 0,
+        resizeEnable: true
       })
 
       // 添加标记
       marker = new window.AMap.Marker({
         position: [lng, lat],
-        title: destination.value.name
+        title: destination.value.name,
+        animation: 'AMAP_ANIMATION_DROP'
       })
       map.add(marker)
 
@@ -120,6 +132,9 @@ async function initMap() {
       marker.on('click', () => {
         infoWindow.open(map, marker.getPosition())
       })
+
+      // 自动打开信息窗口
+      infoWindow.open(map, marker.getPosition())
     }
   } catch (error) {
     console.error('高德地图初始化失败:', error)
@@ -127,11 +142,14 @@ async function initMap() {
 }
 
 // 监听目的地变化，重新初始化地图
-watch(() => destination.value, () => {
-  if (destination.value) {
-    initMap()
+watch(() => destination.value, (newDestination) => {
+  if (newDestination && newDestination.location?.coordinates) {
+    // 延迟初始化，确保DOM已渲染
+    setTimeout(() => {
+      initMap()
+    }, 100)
   }
-})
+}, { immediate: true })
 
 // 组件卸载时清理
 onUnmounted(() => {
