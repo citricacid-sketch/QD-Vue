@@ -149,3 +149,74 @@ export interface AIConversation {
   createdAt: Date;
   updatedAt: Date;
 }
+
+// ==================== 目的地相关类型 ====================
+
+export interface Destination {
+  id: string;                    // 目的地ID
+  name: string;                   // 目的地名称
+  nameEn?: string;                // 英文名称
+  description: string;            // 描述
+  image: string;                  // 封面图片URL
+  images?: string[];              // 更多图片URL数组
+  location: {
+    country: string;              // 国家
+    province?: string;            // 省份/州
+    city: string;                 // 城市
+    coordinates?: {
+      lat: number;                // 纬度
+      lng: number;                // 经度
+    }
+  };
+  tags?: string[];                // 标签（如：['美食', '购物', '历史文化']）
+  rating?: number;                // 评分（0-5）
+  reviewCount?: number;            // 评论数
+  highlights?: string[];          // 亮点/特色
+  bestSeason?: string;            // 最佳旅游季节
+  recommendedDuration?: number;   // 推荐游玩天数
+  budget?: {
+    low: number;                  // 低预算
+    medium: number;               // 中等预算
+    high: number;                 // 高预算
+  };
+  transportation?: string[];      // 交通方式
+  attractions?: Attraction[];    // 景点列表
+  createdAt?: string;             // 创建时间
+  updatedAt?: string;             // 更新时间
+}
+
+export interface Attraction {
+  id: string;                     // 景点ID
+  name: string;                   // 景点名称
+  description: string;            // 描述
+  image?: string;                 // 景点图片
+  rating?: number;                // 评分
+  recommendedDuration?: number;   // 推荐游玩时长（小时）
+  ticketPrice?: {
+    adult: number;                // 成人票
+    child?: number;               // 儿童票
+    currency?: string;            // 货币
+  };
+  openingHours?: string;          // 开放时间
+  address?: string;               // 地址
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+}
+
+export interface DestinationSearchFilters {
+  query?: string;                 // 搜索关键词
+  country?: string;               // 国家
+  tags?: string[];                // 标签筛选
+  minRating?: number;             // 最低评分
+  maxBudget?: number;             // 最高预算
+  season?: string;                // 季节
+}
+
+export interface DestinationApiResponse {
+  destinations: Destination[];
+  total: number;
+  page: number;
+  pageSize: number;
+}

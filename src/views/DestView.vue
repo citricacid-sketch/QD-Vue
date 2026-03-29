@@ -1,30 +1,234 @@
 <script setup lang="ts">
 import AppLayout from '@/components/layout/AppLayout.vue'
-import { ref } from 'vue'
+import DestinationMap from '@/components/DestinationMap.vue'
+import { ref, computed, onMounted } from 'vue'
+import { useDestinationStore } from '@/stores/destination.store'
+import type { Destination } from '@/api/types/travel'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
+const destinationStore = useDestinationStore()
 const searchQuery = ref('')
-const destinations = ref([
-  { id: 1, name: '上海', description: '国际化大都市，东方巴黎', image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { id: 2, name: '北京', description: '中国首都，历史文化名城', image: 'https://images.unsplash.com/photo-1592906209472-a36b1f3782ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { id: 3, name: '西安', description: '古都，兵马俑所在地', image: 'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { id: 4, name: '成都', description: '熊猫故乡，美食之都', image: 'https://images.unsplash.com/photo-1537511133960-3c9c3ff5a3a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { id: 5, name: '桂林', description: '山水甲天下', image: 'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { id: 6, name: '杭州', description: '西湖美景，人间天堂', image: 'https://images.unsplash.com/photo-1544984243-ec57ea16fe25?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-])
 
-const filteredDestinations = ref(destinations.value)
+// 使用store中的目的地数据
+const destinations = computed(() => destinationStore.destinations)
+const filteredDestinations = computed(() => destinationStore.filteredDestinations)
+const isLoading = computed(() => destinationStore.isLoading)
 
-function searchDestinations() {
-  if (!searchQuery.value.trim()) {
-    filteredDestinations.value = destinations.value
-    return
+// 初始化时加载目的地数据
+onMounted(async () => {
+  // 如果本地没有数据，则从API加载
+  if (destinations.value.length === 0) {
+    await destinationStore.loadDestinationsFromAPI()
   }
+  
+  // 如果API加载失败或没有数据，使用默认数据
+  if (destinations.value.length === 0) {
+    initializeDefaultDestinations()
+  }
+})
 
-  const query = searchQuery.value.toLowerCase()
-  filteredDestinations.value = destinations.value.filter(dest =>
-    dest.name.toLowerCase().includes(query) ||
-    dest.description.toLowerCase().includes(query)
-  )
+// 初始化默认目的地数据
+function initializeDefaultDestinations() {
+  const defaultDestinations: Destination[] = [
+    {
+      id: 'shanghai',
+      name: '上海',
+      nameEn: 'Shanghai',
+      description: '国际化大都市，东方巴黎，融合了传统与现代的魅力',
+      image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      location: {
+        country: '中国',
+        province: '上海',
+        city: '上海',
+        coordinates: {
+          lat: 31.2304,
+          lng: 121.4737
+        }
+      },
+      tags: ['购物', '美食', '历史文化', '现代都市'],
+      rating: 4.8,
+      reviewCount: 12580,
+      highlights: ['外滩', '东方明珠', '豫园', '南京路'],
+      bestSeason: '春秋两季',
+      recommendedDuration: 3,
+      budget: {
+        low: 2000,
+        medium: 4000,
+        high: 8000
+      },
+      transportation: ['飞机', '高铁', '地铁']
+    },
+    {
+      id: 'beijing',
+      name: '北京',
+      nameEn: 'Beijing',
+      description: '中国首都，历史文化名城，拥有丰富的文化遗产',
+      image: 'https://images.unsplash.com/photo-1592906209472-a36b1f3782ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      location: {
+        country: '中国',
+        province: '北京',
+        city: '北京',
+        coordinates: {
+          lat: 39.9042,
+          lng: 116.4074
+        }
+      },
+      tags: ['历史文化', '古建筑', '博物馆', '皇家园林'],
+      rating: 4.9,
+      reviewCount: 15230,
+      highlights: ['故宫', '长城', '天坛', '颐和园'],
+      bestSeason: '春秋两季',
+      recommendedDuration: 5,
+      budget: {
+        low: 3000,
+        medium: 6000,
+        high: 12000
+      },
+      transportation: ['飞机', '高铁', '地铁']
+    },
+    {
+      id: 'xian',
+      name: '西安',
+      nameEn: 'Xi'an',
+      description: '古都，兵马俑所在地，十三朝古都',
+      image: 'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      location: {
+        country: '中国',
+        province: '陕西',
+        city: '西安',
+        coordinates: {
+          lat: 34.3416,
+          lng: 108.9398
+        }
+      },
+      tags: ['历史文化', '古建筑', '博物馆', '美食'],
+      rating: 4.7,
+      reviewCount: 9870,
+      highlights: ['兵马俑', '大雁塔', '古城墙', '回民街'],
+      bestSeason: '春秋两季',
+      recommendedDuration: 4,
+      budget: {
+        low: 2500,
+        medium: 5000,
+        high: 10000
+      },
+      transportation: ['飞机', '高铁']
+    },
+    {
+      id: 'chengdu',
+      name: '成都',
+      nameEn: 'Chengdu',
+      description: '熊猫故乡，美食之都，悠闲的生活节奏',
+      image: 'https://images.unsplash.com/photo-1537511133960-3c9c3ff5a3a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      location: {
+        country: '中国',
+        province: '四川',
+        city: '成都',
+        coordinates: {
+          lat: 30.5728,
+          lng: 104.0668
+        }
+      },
+      tags: ['美食', '熊猫', '休闲', '文化'],
+      rating: 4.8,
+      reviewCount: 11200,
+      highlights: ['大熊猫基地', '宽窄巷子', '锦里', '春熙路'],
+      bestSeason: '全年',
+      recommendedDuration: 3,
+      budget: {
+        low: 2000,
+        medium: 4000,
+        high: 8000
+      },
+      transportation: ['飞机', '高铁', '地铁']
+    },
+    {
+      id: 'guilin',
+      name: '桂林',
+      nameEn: 'Guilin',
+      description: '山水甲天下，典型的喀斯特地貌',
+      image: 'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      location: {
+        country: '中国',
+        province: '广西',
+        city: '桂林',
+        coordinates: {
+          lat: 25.2742,
+          lng: 110.2901
+        }
+      },
+      tags: ['自然风光', '山水', '摄影', '休闲'],
+      rating: 4.6,
+      reviewCount: 8900,
+      highlights: ['漓江', '阳朔', '象鼻山', '龙脊梯田'],
+      bestSeason: '4-10月',
+      recommendedDuration: 4,
+      budget: {
+        low: 1800,
+        medium: 3500,
+        high: 7000
+      },
+      transportation: ['飞机', '高铁']
+    },
+    {
+      id: 'hangzhou',
+      name: '杭州',
+      nameEn: 'Hangzhou',
+      description: '西湖美景，人间天堂，江南水乡的代表',
+      image: 'https://images.unsplash.com/photo-1544984243-ec57ea16fe25?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      location: {
+        country: '中国',
+        province: '浙江',
+        city: '杭州',
+        coordinates: {
+          lat: 30.2741,
+          lng: 120.1551
+        }
+      },
+      tags: ['自然风光', '历史文化', '园林', '美食'],
+      rating: 4.7,
+      reviewCount: 10500,
+      highlights: ['西湖', '灵隐寺', '西溪湿地', '宋城'],
+      bestSeason: '春秋两季',
+      recommendedDuration: 3,
+      budget: {
+        low: 2000,
+        medium: 4000,
+        high: 8000
+      },
+      transportation: ['飞机', '高铁', '地铁']
+    }
+  ]
+  
+  // 保存到store
+  defaultDestinations.forEach(dest => {
+    destinationStore.saveDestination(dest)
+  })
+}
+
+// 搜索目的地
+function searchDestinations() {
+  destinationStore.searchDestinations(searchQuery.value)
+}
+
+// 查看目的地详情
+function viewDestinationDetail(destination: Destination) {
+  router.push({
+    name: 'DestinationDetail',
+    params: { id: destination.id }
+  })
+}
+
+// 添加到行程
+function addToTrip(destination: Destination) {
+  // TODO: 实现添加到行程的功能
+  console.log('添加到行程:', destination.name)
+}
+
+// 处理地图上目的地点击
+function handleMapDestinationClick(destination: Destination) {
+  viewDestinationDetail(destination)
 }
 </script>
 
@@ -57,7 +261,13 @@ function searchDestinations() {
         </div>
 
         <!-- 目的地网格 -->
-        <div class="dest-grid">
+        <div v-if="isLoading" class="loading-state">
+          <p>加载中...</p>
+        </div>
+        <div v-else-if="filteredDestinations.length === 0" class="empty-state">
+          <p>没有找到匹配的目的地</p>
+        </div>
+        <div v-else class="dest-grid">
           <div
             v-for="dest in filteredDestinations"
             :key="dest.id"
@@ -66,39 +276,46 @@ function searchDestinations() {
             <div class="dest-image">
               <img :src="dest.image" :alt="dest.name" />
               <div class="dest-overlay">
-                <button class="btn btn-small btn-white">查看详情</button>
+                <button class="btn btn-small btn-white" @click="viewDestinationDetail(dest)">
+                  查看详情
+                </button>
+              </div>
+              <div v-if="dest.rating" class="dest-rating">
+                <span class="stars">★</span>
+                {{ dest.rating.toFixed(1) }}
               </div>
             </div>
             <div class="dest-info">
               <h3>{{ dest.name }}</h3>
               <p>{{ dest.description }}</p>
+              <div v-if="dest.tags && dest.tags.length" class="dest-tags">
+                <span v-for="tag in dest.tags" :key="tag" class="tag">
+                  {{ tag }}
+                </span>
+              </div>
               <div class="dest-actions">
-                <button class="btn btn-outline btn-small">添加到行程</button>
-                <button class="btn btn-primary btn-small">查看地图</button>
+                <button class="btn btn-outline btn-small" @click="addToTrip(dest)">
+                  添加到行程
+                </button>
+                <button class="btn btn-primary btn-small" @click="viewDestinationDetail(dest)">
+                  查看详情
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 地图占位 -->
-        <div class="map-placeholder">
+        <!-- 交互式地图 -->
+        <div class="map-section">
           <div class="map-header">
             <h3>交互式地图</h3>
             <p>点击目的地标记查看详细信息</p>
           </div>
-          <div class="map-container">
-            <div class="map-content">
-              <div class="map-mock">
-                <div class="map-point" style="top: 30%; left: 70%;">上海</div>
-                <div class="map-point" style="top: 25%; left: 50%;">北京</div>
-                <div class="map-point" style="top: 40%; left: 40%;">西安</div>
-                <div class="map-point" style="top: 55%; left: 45%;">成都</div>
-                <div class="map-point" style="top: 60%; left: 65%;">桂林</div>
-                <div class="map-point" style="top: 45%; left: 75%;">杭州</div>
-              </div>
-            </div>
-          </div>
-          <p class="map-note">注：实际项目中可集成 Leaflet 或百度地图 API</p>
+          <DestinationMap
+            :destinations="filteredDestinations"
+            height="500px"
+            @destination-click="handleMapDestinationClick"
+          />
         </div>
       </div>
     </div>
@@ -285,7 +502,7 @@ function searchDestinations() {
   gap: 10px;
 }
 
-.map-placeholder {
+.map-section {
   background: white;
   border-radius: 12px;
   padding: 30px;
@@ -309,49 +526,44 @@ function searchDestinations() {
   margin: 0;
 }
 
-.map-container {
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #eee;
-}
-
-.map-content {
-  position: relative;
-  background: #f5f7ff;
-  height: 400px;
-}
-
-.map-mock {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #e3e9ff 0%, #d1d9ff 100%);
-}
-
-.map-point {
-  position: absolute;
-  background: white;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-weight: 500;
-  color: #4a6cf7;
-  box-shadow: 0 3px 10px rgba(74, 108, 247, 0.2);
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.map-point:hover {
-  transform: scale(1.1);
-  background: #4a6cf7;
-  color: white;
-}
-
-.map-note {
+.loading-state,
+.empty-state {
   text-align: center;
-  color: #999;
+  padding: 40px;
+  color: #666;
+}
+
+.dest-rating {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 8px;
+  border-radius: 12px;
   font-size: 14px;
-  margin-top: 20px;
-  margin-bottom: 0;
+  font-weight: 600;
+  color: #f59e0b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dest-rating .stars {
+  margin-right: 4px;
+}
+
+.dest-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.dest-tags .tag {
+  padding: 4px 10px;
+  background: #f0f4ff;
+  color: #4a6cf7;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 /* 响应式设计 */
