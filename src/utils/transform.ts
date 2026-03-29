@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * 数据转换工具
  * 解决前后端字段名不匹配问题

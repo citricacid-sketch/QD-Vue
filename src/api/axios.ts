@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Axios HTTP客户端封装
  * 统一API调用，处理错误和认证

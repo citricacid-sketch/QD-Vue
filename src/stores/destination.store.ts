@@ -185,6 +185,9 @@ export const useDestinationStore = defineStore('destination', () => {
     if (index >= 0) {
       // 更新现有目的地
       const existing = destinations.value[index]
+      if (!existing) {
+        throw new Error(`Destination with id ${id} not found`)
+      }
       destinations.value[index] = {
         ...existing,
         ...destinationData,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import type { Destination } from '@/api/types/travel'
+import type * as L from 'leaflet'
 
 interface Props {
   destinations: Destination[]
@@ -18,8 +19,8 @@ const emit = defineEmits<{
 }>()
 
 const mapContainer = ref<HTMLElement | null>(null)
-let map: any = null
-let markers: any[] = []
+let map: L.Map | null = null
+let markers: L.Marker[] = []
 
 // 初始化地图
 function initMap() {
@@ -32,16 +33,19 @@ function initMap() {
     link.rel = 'stylesheet'
     link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
     document.head.appendChild(link)
+    
     // 创建地图实例
-    map = L.map(mapContainer.value).setView([35.8617, 104.1954], props.zoom)
+    if (mapContainer.value) {
+      map = L.map(mapContainer.value).setView([35.8617, 104.1954], props.zoom)
 
-    // 添加OpenStreetMap图层
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map)
+      // 添加OpenStreetMap图层
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map)
 
-    // 添加目的地标记
-    addMarkers()
+      // 添加目的地标记
+      addMarkers()
+    }
   })
 }
 
