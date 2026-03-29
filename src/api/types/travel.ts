@@ -30,7 +30,7 @@ export interface BudgetBreakdown {
 export interface Budget {
   total: number;         // 总预算
   currency: string;      // 货币单位，默认"CNY"
-  breakdown?: BudgetBreakdown; // 预算细分
+  breakdown: BudgetBreakdown; // 预算细分
 }
 
 export interface Transportation {
