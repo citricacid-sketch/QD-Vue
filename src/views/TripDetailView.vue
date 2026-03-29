@@ -11,25 +11,27 @@ const router = useRouter()
 const tripId = route.params.id as string
 const trip = ref(travelStore.currentTrip)
 const isEditing = ref(false)
+const defaultBudget = {
+  total: 0,
+  currency: 'CNY',
+  breakdown: {
+    accommodation: 0,
+    transportation: 0,
+    food: 0,
+    activities: 0,
+    shopping: 0,
+    other: 0
+  }
+}
+const defaultTransportation = {
+  primary: '',
+  secondary: '',
+  notes: ''
+}
 const editedTrip = ref({ 
   ...travelStore.currentTrip,
-  budget: travelStore.currentTrip?.budget || {
-    total: 0,
-    currency: 'CNY',
-    breakdown: {
-      accommodation: 0,
-      transportation: 0,
-      food: 0,
-      activities: 0,
-      shopping: 0,
-      other: 0
-    }
-  },
-  transportation: travelStore.currentTrip?.transportation || {
-    primary: '',
-    secondary: '',
-    notes: ''
-  }
+  budget: travelStore.currentTrip?.budget ? { ...travelStore.currentTrip.budget } : defaultBudget,
+  transportation: travelStore.currentTrip?.transportation ? { ...travelStore.currentTrip.transportation } : defaultTransportation
 })
 
 // 加载行程数据
@@ -261,7 +263,7 @@ const sourceOptions = [
                 </div>
               </div>
               <p v-else class="no-data">未设置预算</p>
-              <div v-if="isEditing" class="budget-edit">
+              <div v-if="isEditing && editedTrip.budget" class="budget-edit">
                 <div class="form-group">
                   <label>总预算</label>
                   <input type="number" v-model="editedTrip.budget.total" class="form-input" />
@@ -274,7 +276,7 @@ const sourceOptions = [
                     <option value="EUR">欧元 (EUR)</option>
                   </select>
                 </div>
-                <div class="budget-breakdown-edit">
+                <div v-if="editedTrip.budget.breakdown" class="budget-breakdown-edit">
                   <div class="form-group">
                     <label>住宿</label>
                     <input type="number" v-model="editedTrip.budget.breakdown.accommodation" class="form-input" />
