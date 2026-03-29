@@ -108,6 +108,7 @@ function searchDestinations() {
 <style scoped>
 .dest-container {
   padding: 40px 0 60px;
+  transition: padding 0.3s ease;
 }
 
 .container {
@@ -167,6 +168,7 @@ function searchDestinations() {
   transition: all 0.2s;
   border: none;
   font-size: 16px;
+  min-height: 44px;
 }
 
 .btn-primary {
@@ -215,6 +217,7 @@ function searchDestinations() {
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 30px;
   margin-bottom: 60px;
+  transition: grid-template-columns 0.3s ease;
 }
 
 .dest-card {
@@ -357,6 +360,10 @@ function searchDestinations() {
     padding: 20px 0 40px;
   }
 
+  .container {
+    padding: 0 15px;
+  }
+
   .dest-header h1 {
     font-size: 28px;
   }
@@ -367,14 +374,66 @@ function searchDestinations() {
 
   .search-box {
     flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-box input {
+    width: 100%;
+  }
+
+  .search-box .btn {
+    width: 100%;
   }
 
   .dest-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .dest-card {
+    border-radius: 10px;
+  }
+
+  .dest-image {
+    height: 180px;
+  }
+
+  .dest-info {
+    padding: 15px;
+  }
+
+  .dest-info h3 {
+    font-size: 18px;
+  }
+
+  .dest-info p {
+    font-size: 14px;
+  }
+
+  .dest-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dest-actions .btn {
+    width: 100%;
+  }
+
+  .map-placeholder {
+    padding: 20px 15px;
+  }
+
+  .map-header h3 {
+    font-size: 20px;
   }
 
   .map-content {
     height: 300px;
+  }
+
+  .map-point {
+    padding: 6px 12px;
+    font-size: 14px;
   }
 }
 </style>

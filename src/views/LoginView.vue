@@ -212,6 +212,7 @@ function toggleMode() {
   min-height: 100vh;
   display: flex;
   align-items: center;
+  transition: padding 0.3s ease;
 }
 
 .container {
@@ -225,6 +226,7 @@ function toggleMode() {
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: center;
+  transition: grid-template-columns 0.3s ease;
 }
 
 .login-card {
@@ -352,6 +354,7 @@ function toggleMode() {
   border: none;
   font-size: 16px;
   text-align: center;
+  min-height: 44px;
 }
 
 .btn-block {

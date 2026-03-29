@@ -429,6 +429,7 @@ function deleteAccount() {
 <style scoped>
 .auth-container {
   padding: 40px 0 60px;
+  transition: padding 0.3s ease;
 }
 
 .container {
@@ -444,6 +445,7 @@ function deleteAccount() {
   margin-bottom: 40px;
   padding-bottom: 40px;
   border-bottom: 1px solid #eee;
+  transition: all 0.3s ease;
 }
 
 .user-avatar-large {
@@ -516,6 +518,7 @@ function deleteAccount() {
   border: none;
   font-size: 14px;
   text-align: center;
+  min-height: 44px;
 }
 
 .btn-outline {
@@ -563,6 +566,7 @@ function deleteAccount() {
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tab-button {
@@ -806,24 +810,56 @@ function deleteAccount() {
     padding: 20px 0 40px;
   }
 
+  .container {
+    padding: 0 15px;
+  }
+
   .user-header {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 20px;
+    padding-bottom: 30px;
+  }
+
+  .user-avatar-large {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
   }
 
   .user-info h1 {
     font-size: 24px;
   }
 
+  .user-email {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
   .user-stats {
     justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 13px;
   }
 
   .user-actions {
-    flex-direction: row;
+    flex-direction: column;
+    width: 100%;
     min-width: auto;
+    gap: 10px;
+  }
+
+  .user-actions .btn {
+    width: 100%;
   }
 
   .auth-tabs {
@@ -836,8 +872,51 @@ function deleteAccount() {
     font-size: 14px;
   }
 
+  .tab-content {
+    gap: 20px;
+  }
+
   .tab-card {
-    padding: 20px;
+    padding: 20px 15px;
+  }
+
+  .tab-card h2 {
+    font-size: 20px;
+  }
+
+  .info-row {
+    padding: 12px 0;
+  }
+
+  .info-label {
+    font-size: 13px;
+  }
+
+  .info-value {
+    font-size: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 12px 15px;
+    font-size: 16px;
+  }
+
+  .edit-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .edit-actions .btn {
+    width: 100%;
   }
 
   .setting-item {
@@ -851,15 +930,39 @@ function deleteAccount() {
     width: 100%;
   }
 
+  .setting-control input,
+  .setting-control select {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+  }
+
   .security-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
 
+  .security-item .btn {
+    width: 100%;
+  }
+
+  .data-description {
+    font-size: 14px;
+  }
+
   .warning-content {
     flex-direction: column;
     gap: 15px;
+    text-align: center;
+  }
+
+  .warning-text h3 {
+    font-size: 18px;
+  }
+
+  .warning-text p {
+    font-size: 14px;
   }
 }
 </style>

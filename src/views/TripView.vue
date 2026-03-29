@@ -303,6 +303,7 @@ function getStatusText(status: string) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
 }
 
 .btn-large {
@@ -446,6 +447,7 @@ function getStatusText(status: string) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 25px;
+  transition: grid-template-columns 0.3s ease;
 }
 
 .trip-card {
@@ -566,6 +568,7 @@ function getStatusText(status: string) {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .ai-generate-section {
@@ -611,10 +614,18 @@ function getStatusText(status: string) {
     padding: 20px 0 40px;
   }
 
+  .container {
+    padding: 0 15px;
+  }
+
   .trip-header {
     flex-direction: column;
     gap: 20px;
     margin-bottom: 30px;
+  }
+
+  .header-content {
+    padding: 20px 15px;
   }
 
   .header-content h1 {
@@ -627,20 +638,86 @@ function getStatusText(status: string) {
 
   .stats-cards {
     grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .stat-number {
+    font-size: 28px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+  }
+
+  .trip-tabs {
+    gap: 8px;
+  }
+
+  .tab-button {
+    padding: 8px 16px;
+    font-size: 14px;
   }
 
   .trip-cards {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .trip-card {
+    padding: 20px 15px;
+  }
+
+  .trip-card-header h3 {
+    font-size: 18px;
+  }
+
+  .trip-card-content {
+    margin-bottom: 15px;
+  }
+
+  .date-value {
+    font-size: 14px;
+  }
+
+  .trip-meta {
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-size: 13px;
+  }
+
+  .trip-card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .trip-card-actions .btn {
+    width: 100%;
   }
 
   .ai-generate-content {
     flex-direction: column;
     gap: 20px;
     text-align: center;
+    padding: 20px 15px;
   }
 
   .ai-text {
     text-align: center;
+  }
+
+  .ai-text h4 {
+    font-size: 18px;
+  }
+
+  .ai-text p {
+    font-size: 14px;
   }
 
   .trip-dates {

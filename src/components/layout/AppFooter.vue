@@ -66,6 +66,7 @@ import { RouterLink } from 'vue-router'
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .footer-links a {
@@ -73,10 +74,13 @@ import { RouterLink } from 'vue-router'
   text-decoration: none;
   font-size: 14px;
   transition: color 0.2s;
+  padding: 8px 12px;
+  border-radius: 6px;
 }
 
 .footer-links a:hover {
   color: #4a6cf7;
+  background-color: #f5f7ff;
 }
 
 .footer-copy {
@@ -89,6 +93,25 @@ import { RouterLink } from 'vue-router'
 }
 
 /* 响应式设计 */
+@media (max-width: 767px) {
+  .site-footer {
+    padding: 30px 0 20px;
+  }
+
+  .footer-links {
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  .footer-brand p {
+    font-size: 13px;
+  }
+}
+
 @media (min-width: 768px) {
   .footer-inner {
     flex-direction: row;

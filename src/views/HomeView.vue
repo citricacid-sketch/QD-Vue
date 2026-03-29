@@ -140,6 +140,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   color: #222;
   margin-bottom: 20px;
   line-height: 1.2;
+  transition: font-size 0.3s ease;
 }
 
 .hero-lead {
@@ -148,6 +149,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   max-width: 700px;
   margin: 0 auto 40px;
   line-height: 1.6;
+  transition: font-size 0.3s ease;
 }
 
 .hero-actions {
@@ -167,6 +169,8 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   border: 2px solid transparent;
   font-size: 16px;
   display: inline-block;
+  min-height: 44px;
+  min-width: 120px;
 }
 
 .btn-primary {
@@ -283,6 +287,11 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   .module-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .btn {
+    padding: 10px 24px;
+    font-size: 15px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -298,17 +307,38 @@ import AppLayout from '@/components/layout/AppLayout.vue'
     font-size: 28px;
   }
 
+  .hero-lead {
+    font-size: 14px;
+    max-width: 100%;
+    margin: 0 auto 30px;
+  }
+
+  .hero-actions {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+
   .modules-overview {
-    padding: 20px;
+    padding: 20px 15px;
   }
 
   .section-title {
     font-size: 24px;
+    margin-bottom: 30px;
   }
 
   .module-grid {
     grid-template-columns: 1fr;
     gap: 15px;
+  }
+
+  .module-card {
+    height: auto;
   }
 
   .module-image {
@@ -322,6 +352,14 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 
   .module-content {
     padding: 15px;
+  }
+
+  .module-card h3 {
+    font-size: 16px;
+  }
+
+  .module-card p {
+    font-size: 13px;
   }
 }
 </style>

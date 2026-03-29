@@ -157,7 +157,8 @@ defineEmits<{
   height: 2px;
   background-color: #333;
   margin: 4px 0;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  transform-origin: center;
 }
 
 .main-nav {
@@ -286,10 +287,25 @@ defineEmits<{
   color: #4a6cf7;
 }
 
+/* 汉堡菜单动画 */
+.nav-toggle:hover .nav-toggle-line:nth-child(1) {
+  transform: translateY(1px);
+}
+
+.nav-toggle:hover .nav-toggle-line:nth-child(3) {
+  transform: translateY(-1px);
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .nav-toggle {
     display: block;
+    padding: 8px;
+  }
+
+  .nav-toggle-line {
+    width: 24px;
+    height: 2px;
   }
 
   .main-nav {
@@ -304,8 +320,20 @@ defineEmits<{
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s;
-    gap: 15px;
+    transition: all 0.3s ease;
+    gap: 0;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+
+  .main-nav a {
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 16px;
+  }
+
+  .main-nav a:last-child {
+    border-bottom: none;
   }
 
   .main-nav.is-open {
@@ -317,8 +345,10 @@ defineEmits<{
   .nav-auth-mobile {
     display: block;
     margin-top: 10px;
-    padding-top: 15px;
+    padding: 15px 0;
     border-top: 1px solid #eee;
+    font-size: 16px;
+    font-weight: 600;
   }
 
   .header-auth .btn {

@@ -61,8 +61,8 @@ function startNewChat() {
         </div>
 
         <div class="ai-chat-main">
-          <!-- 聊天历史 -->
-          <div class="chat-history">
+          <!-- 聊天和输入区域 -->
+          <div class="chat-container">
             <div v-if="chatHistory.length === 0" class="empty-chat">
               <div class="empty-icon">🤖</div>
               <h3>开始与AI对话</h3>
@@ -93,6 +93,7 @@ function startNewChat() {
                 </div>
               </div>
             </div>
+
           </div>
 
           <!-- 输入区域 -->
@@ -136,9 +137,6 @@ function startNewChat() {
                 </div>
               </div>
             </div>
-            <p class="input-hint">
-              按 Enter 发送，Shift + Enter 换行
-            </p>
           </div>
         </div>
       </div>
@@ -151,6 +149,7 @@ function startNewChat() {
   padding: 40px 0 60px;
   background: linear-gradient(135deg, #f5f7ff 0%, #e3e9ff 100%);
   min-height: calc(100vh - 140px);
+  transition: padding 0.3s ease;
 }
 
 .container {
@@ -191,17 +190,20 @@ function startNewChat() {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: calc(100vh - 180px);
 }
 
-.chat-history {
+.chat-container {
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   padding: 30px;
-  min-height: 400px;
-  max-height: 600px;
+  flex: 1;
   overflow-y: auto;
   border: 1px solid #e0e7ff;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
 }
 
 .empty-chat {
@@ -306,6 +308,7 @@ function startNewChat() {
 .message-content {
   flex: 1;
   max-width: 80%;
+  min-width: 0;
 }
 
 .message-text {
@@ -318,6 +321,8 @@ function startNewChat() {
   position: relative;
   box-shadow: 0 2px 10px rgba(74, 108, 247, 0.1);
   border: 1px solid #e0e7ff;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .chat-message-user .message-text {
@@ -419,6 +424,10 @@ function startNewChat() {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   padding: 25px;
   border: 1px solid #e0e7ff;
+  transition: padding 0.3s ease;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .input-wrapper {
@@ -438,6 +447,7 @@ textarea {
   min-height: 100px;
   transition: all 0.2s;
   background: #f9fafb;
+  -webkit-appearance: none;
 }
 
 textarea:focus {
@@ -472,6 +482,7 @@ textarea:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
 }
 
 .btn-primary {
@@ -528,25 +539,25 @@ textarea:focus {
 }
 
 .input-hint {
-  font-size: 13px;
+  font-size: 12px;
   color: #9ca3af;
   text-align: center;
-  margin-top: 15px;
+  margin-top: 10px;
   margin-bottom: 0;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .ai-chat-container {
-    padding: 20px 0 40px;
+    padding: 10px 0 20px;
   }
 
   .container {
-    padding: 0 15px;
+    padding: 0 10px;
   }
 
   .header-content {
-    padding: 20px;
+    padding: 20px 15px;
   }
 
   .ai-chat-header h1 {
@@ -557,10 +568,17 @@ textarea:focus {
     font-size: 16px;
   }
 
-  .chat-history {
-    padding: 20px;
-    min-height: 300px;
-    max-height: 500px;
+  .ai-chat-main {
+    height: calc(100vh - 160px);
+  }
+
+  .chat-container {
+    padding: 15px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .empty-chat {
+    padding: 40px 15px;
   }
 
   .empty-icon {
@@ -569,6 +587,11 @@ textarea:focus {
 
   .empty-chat h3 {
     font-size: 20px;
+  }
+
+  .example-prompts {
+    max-width: 100%;
+    padding: 15px;
   }
 
   .chat-message {
@@ -582,25 +605,24 @@ textarea:focus {
   }
 
   .message-content {
-    max-width: 90%;
+    max-width: 85%;
   }
 
   .message-text {
     padding: 14px;
     border-radius: 12px;
-  }
-
-  .example-prompts {
-    padding: 15px;
+    font-size: 14px;
   }
 
   .chat-input-area {
-    padding: 20px;
+    padding: 15px;
+    border-radius: 0 0 16px 16px;
   }
 
   textarea {
-    padding: 15px;
-    min-height: 80px;
+    padding: 12px;
+    min-height: 60px;
+    font-size: 16px;
   }
 
   .input-actions {
@@ -609,17 +631,28 @@ textarea:focus {
   }
 
   .action-group {
-    justify-content: center;
+    justify-content: space-between;
+    margin-top: 10px;
   }
 
   .btn {
-    padding: 10px 20px;
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
   }
 
   .btn-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  .input-hint {
+    font-size: 11px;
+  }
+
+  .message-image {
+    max-width: 100%;
   }
 }
 </style>
