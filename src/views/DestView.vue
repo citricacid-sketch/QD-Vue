@@ -90,7 +90,7 @@ function initializeDefaultDestinations() {
     {
       id: 'xian',
       name: '西安',
-      nameEn: 'Xi'an',
+      nameEn: 'Xian',
       description: '古都，兵马俑所在地，十三朝古都',
       image: 'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       location: {
