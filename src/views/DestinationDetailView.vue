@@ -1,9 +1,22 @@
 <script setup lang="ts">
 import AppLayout from '@/components/layout/AppLayout.vue'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDestinationStore } from '@/stores/destination.store'
 import type { Destination, Attraction } from '@/api/types/travel'
+import { loadAmapScript, initAmapSecurityConfig, isAmapConfigured } from '@/utils/amapConfig'
+
+interface AMap {
+  Map: any
+  Marker: any
+  InfoWindow: any
+}
+
+declare global {
+  interface Window {
+    AMap: AMap
+  }
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -65,6 +78,84 @@ function addToTrip() {
 function goBack() {
   router.push({ name: 'Destinations' })
 }
+
+// 地图相关
+const mapContainer = ref<HTMLElement | null>(null)
+let map: AMap.Map | null = null
+let marker: any = null
+
+// 初始化地图
+async function initMap() {
+  if (!mapContainer.value || typeof window === 'undefined') return
+
+  // 检查高德地图配置
+  if (!isAmapConfigured()) {
+    console.error('高德地图未配置，请检查环境变量 VITE_AMAP_KEY 和 VITE_AMAP_SECURITY_CODE')
+    return
+  }
+
+  try {
+    // 初始化安全配置
+    initAmapSecurityConfig()
+    
+    // 加载高德地图API
+    await loadAmapScript()
+
+    // 创建地图实例
+    if (mapContainer.value && destination.value?.location.coordinates) {
+      const { lat, lng } = destination.value.location.coordinates
+      map = new window.AMap.Map(mapContainer.value, {
+        zoom: 12,
+        center: [lng, lat],
+        viewMode: '2D',
+        pitch: 0
+      })
+
+      // 添加标记
+      marker = new window.AMap.Marker({
+        position: [lng, lat],
+        title: destination.value.name
+      })
+      map.add(marker)
+
+      // 添加信息窗口
+      const infoWindow = new window.AMap.InfoWindow({
+        content: `
+          <div class="amap-info-window">
+            <h3>${destination.value.name}</h3>
+            <p>${destination.value.location.city}, ${destination.value.location.country}</p>
+          </div>
+        `,
+        offset: new window.AMap.Pixel(0, -30)
+      })
+      
+      marker.on('click', () => {
+        infoWindow.open(map, marker.getPosition())
+      })
+    }
+  } catch (error) {
+    console.error('高德地图初始化失败:', error)
+  }
+}
+
+// 监听目的地变化，重新初始化地图
+watch(() => destination.value, () => {
+  if (destination.value) {
+    initMap()
+  }
+})
+
+// 组件卸载时清理
+onUnmounted(() => {
+  if (map) {
+    map.destroy()
+    map = null
+  }
+  if (marker) {
+    marker.setMap(null)
+    marker = null
+  }
+})
 </script>
 
 <template>
@@ -240,7 +331,7 @@ function goBack() {
             <!-- 地图位置 -->
             <div class="sidebar-card map-card">
               <h3>位置</h3>
-              <div class="map-placeholder">
+              <div class="map-info">
                 <p>{{ destination.location.country }}</p>
                 <p v-if="destination.location.province">{{ destination.location.province }}</p>
                 <p>{{ destination.location.city }}</p>
@@ -248,6 +339,7 @@ function goBack() {
                   {{ destination.location.coordinates.lat.toFixed(4) }}, {{ destination.location.coordinates.lng.toFixed(4) }}
                 </p>
               </div>
+              <div ref="mapContainer" class="map-container"></div>
             </div>
           </div>
         </div>

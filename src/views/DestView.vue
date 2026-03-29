@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AppLayout from '@/components/layout/AppLayout.vue'
-import DestinationMap from '@/components/DestinationMap.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useDestinationStore } from '@/stores/destination.store'
 import type { Destination } from '@/api/types/travel'
@@ -225,11 +224,6 @@ function addToTrip(destination: Destination) {
   // TODO: 实现添加到行程的功能
   console.log('添加到行程:', destination.name)
 }
-
-// 处理地图上目的地点击
-function handleMapDestinationClick(destination: Destination) {
-  viewDestinationDetail(destination)
-}
 </script>
 
 <template>
@@ -305,18 +299,7 @@ function handleMapDestinationClick(destination: Destination) {
           </div>
         </div>
 
-        <!-- 交互式地图 -->
-        <div class="map-section">
-          <div class="map-header">
-            <h3>交互式地图</h3>
-            <p>点击目的地标记查看详细信息</p>
-          </div>
-          <DestinationMap
-            :destinations="filteredDestinations"
-            height="500px"
-            @destination-click="handleMapDestinationClick"
-          />
-        </div>
+
       </div>
     </div>
   </AppLayout>

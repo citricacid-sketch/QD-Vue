@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import type { Destination } from '@/api/types/travel'
-import type * as L from 'leaflet'
+import { loadAmapScript, initAmapSecurityConfig, isAmapConfigured } from '@/utils/amapConfig'
+
+interface AMap {
+  Map: any
+  Marker: any
+  InfoWindow: any
+  TileLayer: any
+}
+
+declare global {
+  interface Window {
+    AMap: AMap
+  }
+}
 
 interface Props {
   destinations: Destination[]
@@ -19,34 +32,42 @@ const emit = defineEmits<{
 }>()
 
 const mapContainer = ref<HTMLElement | null>(null)
-let map: L.Map | null = null
-let markers: L.Marker[] = []
+let map: AMap.Map | null = null
+let markers: any[] = []
+let infoWindows: any[] = []
 
 // 初始化地图
-function initMap() {
+async function initMap() {
   if (!mapContainer.value || typeof window === 'undefined') return
 
-  // 动态导入Leaflet
-  import('leaflet').then((L) => {
-    // 动态加载Leaflet CSS
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-    document.head.appendChild(link)
-    
+  // 检查高德地图配置
+  if (!isAmapConfigured()) {
+    console.error('高德地图未配置，请检查环境变量 VITE_AMAP_KEY 和 VITE_AMAP_SECURITY_CODE')
+    return
+  }
+
+  try {
+    // 初始化安全配置
+    initAmapSecurityConfig()
+
+    // 加载高德地图API
+    await loadAmapScript()
+
     // 创建地图实例
     if (mapContainer.value) {
-      map = L.map(mapContainer.value).setView([35.8617, 104.1954], props.zoom)
-
-      // 添加OpenStreetMap图层
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map)
+      map = new window.AMap.Map(mapContainer.value, {
+        zoom: props.zoom,
+        center: [104.1954, 35.8617], // 中国中心点
+        viewMode: '2D',
+        pitch: 0
+      })
 
       // 添加目的地标记
       addMarkers()
     }
-  })
+  } catch (error) {
+    console.error('高德地图初始化失败:', error)
+  }
 }
 
 // 添加标记
@@ -56,62 +77,54 @@ function addMarkers() {
   // 清除现有标记
   clearMarkers()
 
-  import('leaflet').then((L) => {
-    const currentMap = map
-    if (!currentMap) return
-    props.destinations.forEach(dest => {
-      if (dest.location.coordinates) {
-        // 创建自定义图标
-        const icon = L.divIcon({
-          className: 'custom-marker',
-          html: `
-            <div class="marker-content">
-              <span class="marker-label">${dest.name}</span>
-              <div class="marker-dot"></div>
-            </div>
-          `,
-          iconSize: [120, 40],
-          iconAnchor: [60, 20]
-        })
+  props.destinations.forEach(dest => {
+    if (dest.location.coordinates) {
+      // 创建标记
+      const marker = new window.AMap.Marker({
+        position: [dest.location.coordinates.lng, dest.location.coordinates.lat],
+        map: map,
+        title: dest.name
+      })
 
-        // 添加标记
-        const marker = L.marker(
-          [dest.location.coordinates.lat, dest.location.coordinates.lng],
-          { icon }
-        ).addTo(currentMap)
+      // 创建信息窗口
+      const content = `
+        <div class="amap-info-window">
+          <h3>${dest.name}</h3>
+          <p>${dest.description}</p>
+          ${dest.rating ? `<p class="rating">评分: ${dest.rating.toFixed(1)}</p>` : ''}
+        </div>
+      `
 
-        // 添加点击事件
-        marker.on('click', () => {
-          emit('destinationClick', dest)
-          // 地图移动到标记位置
-          if (dest.location.coordinates) {
-            currentMap.setView([dest.location.coordinates.lat, dest.location.coordinates.lng], 8)
-          }
-        })
+      const infoWindow = new window.AMap.InfoWindow({
+        content: content,
+        offset: new window.AMap.Pixel(0, -30)
+      })
 
-        // 添加弹出窗口
-        marker.bindPopup(`
-          <div class="popup-content">
-            <h3>${dest.name}</h3>
-            <p>${dest.description}</p>
-            ${dest.rating ? `<p class="rating">评分: ${dest.rating.toFixed(1)}</p>` : ''}
-          </div>
-        `)
+      // 添加点击事件
+      marker.on('click', () => {
+        emit('destinationClick', dest)
+        // 地图移动到标记位置
+        if (dest.location.coordinates) {
+          map.setCenter([dest.location.coordinates.lng, dest.location.coordinates.lat])
+          map.setZoom(8)
+        }
+        // 打开信息窗口
+        infoWindow.open(map, marker.getPosition())
+      })
 
-        markers.push(marker)
-      }
-    })
+      markers.push(marker)
+      infoWindows.push(infoWindow)
+    }
   })
 }
 
 // 清除标记
 function clearMarkers() {
-  const currentMap = map
-  if (!currentMap) return
   markers.forEach(marker => {
-    currentMap.removeLayer(marker)
+    marker.setMap(null)
   })
   markers = []
+  infoWindows = []
 }
 
 // 监听目的地变化
@@ -127,9 +140,10 @@ onMounted(() => {
 // 组件卸载时清理
 onUnmounted(() => {
   if (map) {
-    map.remove()
+    map.destroy()
     map = null
   }
+  clearMarkers()
 })
 
 // 暴露方法给父组件
@@ -157,59 +171,26 @@ defineExpose({
   height: 100%;
 }
 
-/* 自定义标记样式 */
-:deep(.custom-marker) {
-  background: transparent;
-  border: none;
-}
-
-:deep(.marker-content) {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-:deep(.marker-label) {
-  background: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #4a6cf7;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  white-space: nowrap;
-  margin-bottom: 4px;
-}
-
-:deep(.marker-dot) {
-  width: 12px;
-  height: 12px;
-  background: #4a6cf7;
-  border: 2px solid white;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* 弹出窗口样式 */
-:deep(.popup-content) {
+/* 高德地图信息窗口样式 */
+:deep(.amap-info-window) {
+  padding: 12px;
   min-width: 200px;
 }
 
-:deep(.popup-content h3) {
+:deep(.amap-info-window h3) {
   margin: 0 0 8px;
   font-size: 16px;
   color: #222;
 }
 
-:deep(.popup-content p) {
+:deep(.amap-info-window p) {
   margin: 0 0 8px;
   font-size: 14px;
   color: #666;
   line-height: 1.5;
 }
 
-:deep(.popup-content .rating) {
+:deep(.amap-info-window .rating) {
   margin: 0;
   font-weight: 600;
   color: #f59e0b;
