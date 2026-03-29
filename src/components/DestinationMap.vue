@@ -3,20 +3,6 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import type { Destination } from '@/api/types/travel'
 import { loadAmapScript, initAmapSecurityConfig, isAmapConfigured } from '@/utils/amapConfig'
 
-interface AMap {
-  Map: any
-  Marker: any
-  InfoWindow: any
-  TileLayer: any
-  Pixel: any
-}
-
-declare global {
-  interface Window {
-    AMap: AMap
-  }
-}
-
 interface Props {
   destinations: Destination[]
   height?: string

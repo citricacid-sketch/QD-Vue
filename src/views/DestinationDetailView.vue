@@ -6,19 +6,6 @@ import { useDestinationStore } from '@/stores/destination.store'
 import type { Destination, Attraction } from '@/api/types/travel'
 import { loadAmapScript, initAmapSecurityConfig, isAmapConfigured } from '@/utils/amapConfig'
 
-interface AMap {
-  Map: any
-  Marker: any
-  InfoWindow: any
-  Pixel: any
-}
-
-declare global {
-  interface Window {
-    AMap: AMap
-  }
-}
-
 const route = useRoute()
 const router = useRouter()
 const destinationStore = useDestinationStore()
